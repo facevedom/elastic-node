@@ -2,7 +2,8 @@
 const elasticsearch = require('elasticsearch');
 // instantiate an Elasticsearch client
 const client = new elasticsearch.Client({
-    hosts: ['http://localhost:9200']
+    hosts: ['http://localhost:9200'],
+    requestTimeout: 1000000
 });
 // ping the client to be sure Elasticsearch is up
 client.ping({
@@ -40,28 +41,28 @@ client.index({
         }
     }, function(err, resp, status) {
         console.log(resp);
-    })
+    });
 
-// require the array of cities
+// require the array of cities that was downloaded
 const cities = require('./cities.json');
-// declare an empty array called 'bulk'
+// declare an empty array called bulk
 var bulk = [];
-// loop through each city and create and push two objects into the array in each loop
-// first object sends the index and type you will be saving the data as
-// second object is the data you want to index
-cities.forEach(city => {
-    bulk.push({index:{
-                _index:"scotch.io-tutorial",
-                _type:"cities-list",
-            }
-        })
-    bulk.push(city)
+//loop through each city and create and push two objects into the array in each loop
+//first object sends the index and type you will be saving the data as
+//second object is the data you want to index
+cities.forEach(city =>{
+   bulk.push({index:{ 
+                 _index:"scotch.io-tutorial", 
+                 _type:"cities_list",
+             }          
+         })
+  bulk.push(city)
 })
-// perform bulk indexing of the data passed
-client.bulk({body:bulk}, function( err, response ){
-    if( err ){
-        console.log("Failed Bulk operation".red, err)
-    } else {
-        console.log("Succesfully imported %s".green, cities.length);
-    }
-});
+//perform bulk indexing of the data passed
+client.bulk({body:bulk}, function( err, response  ){ 
+         if( err ){ 
+             console.log("Failed Bulk operation".red, err) 
+         } else { 
+             console.log("Successfully imported %s".green, cities.length); 
+         } 
+}); 
