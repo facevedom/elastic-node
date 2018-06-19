@@ -76,3 +76,10 @@ app.get('/search', function (req, res){
 app.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + app.get('port'));
 })
+
+// declare a new route. This route serves a static HTML template
+app.get('/v2', function(req, res){
+    res.sendFile('template2.html', {
+        root: path.join(__dirname, 'views')
+    });
+})
